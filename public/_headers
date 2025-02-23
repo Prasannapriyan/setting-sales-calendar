@@ -1,0 +1,38 @@
+# Security headers for all paths
+/*
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Content-Security-Policy: default-src 'self' https://*.firebaseio.com https://*.firebase.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseio.com https://*.firebase.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebase.com https://*.asia-southeast1.firebasedatabase.app; font-src 'self' data:; worker-src 'self' blob:;
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Cache control for static assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for JavaScript files
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for CSS files
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# No caching for HTML files to ensure fresh content
+/*.html
+  Cache-Control: public, no-cache, must-revalidate
+  Pragma: no-cache
+
+# Cache control for images
+/*.{png,jpg,jpeg,gif,webp,svg,ico}
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache control for fonts
+/*.{woff,woff2,ttf,otf,eot}
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service worker
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate

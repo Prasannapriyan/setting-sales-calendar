@@ -1,0 +1,9 @@
+# Netlify redirects file
+/* /index.html 200
+
+# Handle www subdomain
+http://www.fitx120-sales.netlify.app/* https://fitx120-sales.netlify.app/:splat 301!
+https://www.fitx120-sales.netlify.app/* https://fitx120-sales.netlify.app/:splat 301!
+
+# Force HTTPS
+http://fitx120-sales.netlify.app/* https://fitx120-sales.netlify.app/:splat 301!
