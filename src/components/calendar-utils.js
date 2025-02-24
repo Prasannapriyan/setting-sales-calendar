@@ -92,6 +92,12 @@ export const calculateSetterStats = (appointments, setter) => {
     initialPitch20k: setterAppointments.filter(app => app.initialPitchType === '20k_pitched').length,
     // Other stats
     converted: setterAppointments.filter(app => app.status === 'paid').length,
+    converted5k: setterAppointments.filter(app => 
+      app.status === 'paid' && app.pitchedType === '5k_pitched'
+    ).length,
+    converted20k: setterAppointments.filter(app => 
+      app.status === 'paid' && app.pitchedType === '20k_pitched'
+    ).length,
     didntPick: setterAppointments.filter(app => app.status === 'didnt_pick').length,
     wronglyQualified: setterAppointments.filter(app => app.status === 'wrongly_qualified').length
   };
