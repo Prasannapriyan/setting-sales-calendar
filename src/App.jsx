@@ -56,7 +56,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col items-center space-y-2">
             <h1 className="text-2xl font-bold text-gray-900">
               FITX120 Sales Calendar
             </h1>

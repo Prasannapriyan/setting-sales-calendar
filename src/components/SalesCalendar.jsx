@@ -24,6 +24,7 @@ const SalesCalendar = () => {
   const [hoveredAppointment, setHoveredAppointment] = useState(null);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [unavailableSlots, setUnavailableSlots] = useState({});
 
   // Time slots memoization
   const timeSlots = useMemo(() => createTimeSlots(), []);
@@ -92,7 +93,8 @@ const SalesCalendar = () => {
   };
 
   const handleSlotClick = (person, time, isUnavailable) => {
-    if (isUnavailable) {
+    const slotKey = `${person.name}-${time}-${selectedDate.toDateString()}`;
+    if (isUnavailable || unavailableSlots[slotKey]) {
       const confirmBook = window.confirm(
         'This slot is marked as unavailable. Would you still like to book it?'
       );
@@ -100,6 +102,14 @@ const SalesCalendar = () => {
     }
     setSelectedSlot({ person, time, isUnavailable });
     setShowBookingForm(true);
+  };
+
+  const toggleUnavailable = (person, time) => {
+    const slotKey = `${person.name}-${time}-${selectedDate.toDateString()}`;
+    setUnavailableSlots(prev => ({
+      ...prev,
+      [slotKey]: !prev[slotKey]
+    }));
   };
 
   // Calculate statistics
@@ -153,6 +163,7 @@ const SalesCalendar = () => {
                       app.time === time &&
                       app.date.toDateString() === selectedDate.toDateString()
                   );
+                  const slotKey = `${person.name}-${time}-${selectedDate.toDateString()}`;
                   const isTimeAvailable = time >= person.startTime && 
                                         time < person.endTime && 
                                         person.isPresent;
@@ -160,7 +171,7 @@ const SalesCalendar = () => {
                   return (
                     <td 
                       key={`${person.name}-${time}`} 
-                      className="border p-2 text-center"
+                      className="border p-2 text-center relative"
                     >
                       {appointment ? (
                         <button
@@ -184,16 +195,31 @@ const SalesCalendar = () => {
                           {getStatusDisplay(appointment.status)}
                         </button>
                       ) : (
-                        <button
-                          className={`w-full p-2 ${
-                            isTimeAvailable 
-                              ? 'bg-green-600 hover:bg-green-700' 
-                              : 'bg-gray-400 hover:bg-gray-500'
-                          } text-white rounded`}
-                          onClick={() => handleSlotClick(person, time, !isTimeAvailable)}
-                        >
-                          {isTimeAvailable ? 'Available' : 'Unavailable'}
-                        </button>
+                        <div className="relative">
+                          <button
+                            className={`w-full p-2 ${
+                              isTimeAvailable && !unavailableSlots[slotKey]
+                                ? 'bg-green-600 hover:bg-green-700' 
+                                : 'bg-gray-400 hover:bg-gray-500'
+                            } text-white rounded`}
+                            onClick={() => handleSlotClick(person, time, !isTimeAvailable || unavailableSlots[slotKey])}
+                          >
+                            {isTimeAvailable && !unavailableSlots[slotKey] ? 'Available' : 'Unavailable'}
+                          </button>
+                          {isTimeAvailable && (
+                            <button
+              className={`absolute top-0 right-0 -mr-0.5 -mt-0.5 ${
+                unavailableSlots[slotKey] 
+                  ? 'bg-green-500 hover:bg-green-600' 
+                  : 'bg-black/20 hover:bg-black/30'
+              } text-white rounded-full w-4 h-4 text-[10px] flex items-center justify-center`}
+                              onClick={() => toggleUnavailable(person, time)}
+                              title={unavailableSlots[slotKey] ? "Mark as Available" : "Mark as Unavailable"}
+                            >
+                              {unavailableSlots[slotKey] ? '✓' : '×'}
+                            </button>
+                          )}
+                        </div>
                       )}
                     </td>
                   );
