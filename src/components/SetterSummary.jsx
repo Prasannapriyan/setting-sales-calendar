@@ -55,12 +55,12 @@ const SetterSummary = ({ setterStats }) => {
               const totalPitched = stats.pitch5k + stats.pitch20k;
               
               // Calculate separate conversion rates
-              const conversion5kRate = stats.pitch5k > 0 
-                ? ((stats.converted5k / stats.pitch5k) * 100).toFixed(1)
+              const conversion5kRate = stats.initialPitch5k > 0 
+                ? ((stats.converted5k / stats.initialPitch5k) * 100).toFixed(1)
                 : '0.0';
               
-              const conversion20kRate = stats.pitch20k > 0 
-                ? ((stats.converted20k / stats.pitch20k) * 100).toFixed(1)
+              const conversion20kRate = stats.initialPitch20k > 0 
+                ? ((stats.converted20k / stats.initialPitch20k) * 100).toFixed(1)
                 : '0.0';
 
               return (
@@ -121,11 +121,11 @@ const SetterSummary = ({ setterStats }) => {
               </td>
               <td className="px-2 py-2 text-center border font-bold">
                 {(SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.converted5k || 0), 0) / 
-                  Math.max(1, SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.pitch5k || 0), 0)) * 100).toFixed(1)}%
+                  Math.max(1, SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.initialPitch5k || 0), 0)) * 100).toFixed(1)}%
               </td>
               <td className="px-2 py-2 text-center border font-bold">
                 {(SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.converted20k || 0), 0) / 
-                  Math.max(1, SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.pitch20k || 0), 0)) * 100).toFixed(1)}%
+                  Math.max(1, SETTERS.reduce((acc, setter) => acc + (setterStats[setter]?.initialPitch20k || 0), 0)) * 100).toFixed(1)}%
               </td>
             </tr>
           </tfoot>

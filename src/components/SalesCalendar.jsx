@@ -5,6 +5,7 @@ import AppointmentForm from './forms/AppointmentForm';
 import StatusForm from './forms/StatusForm';
 import AppointmentTooltip from './AppointmentTooltip';
 import SetterSummary from './SetterSummary';
+import SalesPersonSummary from './SalesPersonSummary';
 
 const SalesCalendar = () => {
   // Initial sales people with attendance status
@@ -328,6 +329,11 @@ const SalesCalendar = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sales Person Performance */}
+      <div className="bg-gray-50 p-4 rounded-lg mt-6">
+        <SalesPersonSummary salesPersonStats={stats.salesPersonStats} />
       </div>
 
       {/* Setter Summary */}

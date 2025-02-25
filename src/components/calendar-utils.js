@@ -93,13 +93,52 @@ export const calculateSetterStats = (appointments, setter) => {
     // Other stats
     converted: setterAppointments.filter(app => app.status === 'paid').length,
     converted5k: setterAppointments.filter(app => 
-      app.status === 'paid' && app.pitchedType === '5k_pitched'
+      app.status === 'paid' && 
+      app.pitchedType === '5k_pitched' &&
+      app.initialPitchType === '5k_pitched'
     ).length,
     converted20k: setterAppointments.filter(app => 
-      app.status === 'paid' && app.pitchedType === '20k_pitched'
+      app.status === 'paid' && 
+      app.pitchedType === '20k_pitched' &&
+      app.initialPitchType === '20k_pitched'
     ).length,
     didntPick: setterAppointments.filter(app => app.status === 'didnt_pick').length,
     wronglyQualified: setterAppointments.filter(app => app.status === 'wrongly_qualified').length
+  };
+};
+
+export const calculateSalesPersonStats = (appointments, salesPerson, selectedDate) => {
+  const personAppointments = appointments.filter(app => 
+    app.salesPerson === salesPerson && 
+    app.date.toDateString() === selectedDate.toDateString()
+  );
+
+  const booked5k = personAppointments.filter(app => app.initialPitchType === '5k_pitched').length;
+  const booked20k = personAppointments.filter(app => app.initialPitchType === '20k_pitched').length;
+
+  const totalPitch5k = personAppointments.filter(app => 
+    app.status === '5k_pitched' || 
+    (app.status === 'paid' && app.pitchedType === '5k_pitched')
+  ).length;
+
+  const totalPitch20k = personAppointments.filter(app => 
+    app.status === '20k_pitched' || 
+    (app.status === 'paid' && app.pitchedType === '20k_pitched')
+  ).length;
+
+  const payments = personAppointments.reduce((acc, app) => {
+    if (app.paymentType) {
+      acc[app.paymentType] = (acc[app.paymentType] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  return {
+    booked5k,
+    booked20k,
+    totalPitch5k,
+    totalPitch20k,
+    payments
   };
 };
 
@@ -142,6 +181,12 @@ export const calculateStats = (appointments, salesPeople, selectedDate) => {
     setterStats[setter] = calculateSetterStats(todayAppointments, setter);
   });
 
+  // Calculate sales person statistics
+  const salesPersonStats = {};
+  salesPeople.forEach(person => {
+    salesPersonStats[person.name] = calculateSalesPersonStats(todayAppointments, person.name, selectedDate);
+  });
+
   // Count pitch types based on final status or overridden type
   const pitched5k = todayAppointments.filter(app => 
     app.status === '5k_pitched' || 
@@ -169,6 +214,7 @@ export const calculateStats = (appointments, salesPeople, selectedDate) => {
     total: totalSlots,
     payments,
     totalRevenue,
-    setterStats
+    setterStats,
+    salesPersonStats
   };
 };
